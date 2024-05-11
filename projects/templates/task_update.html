@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+{% include 'nav.html' %}
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+<meta name="generator" content="Hugo 0.88.1">
+<title>Manage Tasks</title>
+
+<!-- CSS only -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+<link rel="stylesheet" href="/static/assets/css/custom.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='nav.css') }}">
+</head>
+<body>
+    <br><br> <center>
+    <h3>Update Task Details</h3>
+</center>
+    <form  action="{{ url_for('task_update_no_para')}}" method="POST">
+        {% for task in tasks %}
+        <table class="table">
+            <tbody>
+                <tr>
+                    <td><input name ='task_name' type="text" class="form-control" placeholder="Task Name" value="{{task.TaskName}}"></td>
+                    <td>
+                        <select name = 'priority' class="form-select" aria-label="priority" >
+                            <option selected>{{ task.Priority }}</option>
+                            <option value="High">High</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Low">Low</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select name = 'category' class="form-select" aria-label="Category">
+                            <option selected>{{ task.Category}}</option>
+                            <option value="Work">Work</option>
+                            <option value="Personal">Personal</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </td>
+                    <td><input name = 'due_date' type="date" class="form-control" value="{{task.DueDate}}"></td>
+                    <td>
+                        <select name = "status" class="form-select" aria-label="Status">
+                            <option selected>{{task.status}}</option>
+                            <option value="To Do">To Do</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Done">Done</option>
+                        </select>
+                    </td>
+                    </td>
+                    <td><input type="hidden" name="task_id" value="{{task_id}}">
+                    </td>
+                    </td>
+                    <td><button type="submit" class="btn btn-primary">Update</button></td>
+                </tr>
+            </tbody>
+        </table>
+        {% endfor %}
+    </form>
+</body>
+</html>

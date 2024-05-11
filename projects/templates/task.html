@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+{% include 'nav.html' %}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.88.1">
+    <title>Flask Authentication | Bootstrap v5.1</title>
+
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/assets/css/custom.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='nav.css') }}">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3" >
+                <div class="list-group">
+                    <a href="#" class="list-group-item list-group-item-action active">
+                        Main Tasks <div class="d-flex align-items-center mb-3">
+                            <button type="button" class="circular-button me-2" id="addTaskBtn"><i class="bi bi-plus"></i></button>
+                            
+                        </div>
+                        
+                    </a>
+                    
+                    
+                    {% for task in tasks %}
+                    <a href="#" class="list-group-item list-group-item-action view-subtask" data-taskid="{{ task.TaskID }}">{{ task.TaskName }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-md-9" style="background-color: #ffffff;">
+                <div id="taskInput" style="display: none;">
+                    <form  action="{{ url_for('manage_task_add') }}" method="POST">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td><input name ='task_name' type="text" class="form-control" placeholder="Task Name"></td>
+                                    <td>
+                                        <select name = 'priority' class="form-select" aria-label="priority">
+                                            <option selected>priority</option>
+                                            <option value="High">High</option>
+                                            <option value="Medium">Medium</option>
+                                            <option value="Low">Low</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select name = 'category' class="form-select" aria-label="Category">
+                                            <option selected>Category</option>
+                                            <option value="Work">Work</option>
+                                            <option value="Personal">Personal</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </td>
+                                    <td><input name = 'due_date' type="date" class="form-control"></td>
+                                    <td>
+                                        <select name = "status" class="form-select" aria-label="Status">
+                                            <option selected>Status</option>
+                                            <option value="To Do">To Do</option>
+                                            <option value="In Progress">In Progress</option>
+                                            <option value="Done">Done</option>
+                                        </select>
+                                    </td>
+                                    </td>
+                                    <td><input type="hidden" name="user_id" value="{{user_id}}">
+                                    </td>
+                                    </td>
+                                    <td><button type="submit" class="btn btn-primary">Add</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+                {% for task in tasks %}
+                <div class="table subtask-table" id="subtask-{{ task.TaskID }}" style="display: none; width: 100%;">
+                    <div><h3>{{task.TaskName}}</h3></div>
+                    <div class="container mt-5">
+                        <div class="d-flex align-items-center mb-3">
+                            <button type="button" class="circular-button me-2 addSubTaskBtn" data-taskid="{{ task.TaskID }}"><i class="bi bi-plus"></i></button>
+                            <h5 class="m-0">Add New Sub Task</h5>
+                        </div>
+                        <div id="SubtaskInput{{ task.TaskID }}" style="display: none;">
+                            <form  action="{{ url_for('task_sub_add') }}" method="POST">
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td><input name ='task_name' type="text" class="form-control" placeholder="Task Name"></td>
+                                            <td>
+                                                <select name='priority' class="form-select" aria-label="priority">
+                                                    <option selected>priority</option>
+                                                    <option value="High">High</option>
+                                                    <option value="Medium">Medium</option>
+                                                    <option value="Low">Low</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select name='category' class="form-select" aria-label="Category">
+                                                    <option selected>Category</option>
+                                                    <option value="Work">Work</option>
+                                                    <option value="Personal">Personal</option>
+                                                    <option value="Other">Other</option>
+                                                </select>
+                                            </td>
+                                            <td><input name='due_date' type="date" class="form-control"></td>
+                                            <td>
+                                                <select name="status" class="form-select" aria-label="Status">
+                                                    <option selected>Status</option>
+                                                    <option value="To Do">To Do</option>
+                                                    <option value="In Progress">In Progress</option>
+                                                    <option value="Done">Done</option>
+                                                </select>
+                                            </td>
+                                            <td><input type="hidden" name="user_id" value="{{user_id}}"></td>
+                                            <td><input type="hidden" name="task_id" value="{{task.TaskID}}"></td>
+                                            <td><button type="submit" class="btn btn-primary">Add</button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </form>
+                        </div>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Priority</th>
+                                <th>Category</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                                <th>Options</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for subtask in subtasks %}
+                            {% if subtask.TaskID == task.TaskID %}
+                            <tr>
+                                <td>{{ subtask.TaskName }}</td>
+                                <td>{{ subtask.Priority }}</td>
+                                <td>{{ subtask.Category }}</td>
+                                <td>{{ subtask.DueDate }}</td>
+                                <td>{{ subtask.status }}</td>
+                                <td>
+                                    <button type="button" class="btn btn-outline-primary btn-sm ms-auto" id="editTaskBtn{{ task.TaskID }}"><i class="bi bi-pencil"></i></button>
+                                    <button type="button" class="btn btn-outline-danger btn-sm me-2" id="deleteTaskBtn{{ task.TaskID }}"><i class="bi bi-trash"></i></button>
+                                </td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $(".view-subtask").click(function() {
+                var taskId = $(this).data('taskid');
+                $(".subtask-table").hide(); // Hide all subtask tables
+                $("#subtask-" + taskId).show(); // Show subtask table for the clicked task
+            });
+
+            $(".addSubTaskBtn").click(function() {
+                var taskId = $(this).data('taskid');
+                $("#SubtaskInput" + taskId).toggle(); // Show/hide the subtask input form
+            });
+        });
+    </script>
+</body>
+</html>

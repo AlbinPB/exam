@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+{% include 'nav.html' %}
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+<meta name="generator" content="Hugo 0.88.1">
+<title>Manage Tasks</title>
+
+<!-- CSS only -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+<link rel="stylesheet" href="/static/assets/css/custom.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='nav.css') }}">
+
+<style>
+    .circular-button {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #006aff; /* Grey color */
+        color: rgb(255, 255, 255);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .status {
+            display: inline-block;
+            padding:10px 15px;
+            border-radius: 10px;
+            font-size: 0.8em;
+        }
+
+        .done { background-color: rgb(102, 235, 102); }
+        .todo { background-color: orange; }
+        .in-progress { background-color: rgb(211, 208, 208); }
+        .due { background-color: rgb(255, 0, 0); }
+</style>
+
+</head>
+<body>
+
+<main>
+    <div class="container mt-5">
+
+
+        <!-- <form id="filter" action="" method="POST" style="display: inline;">
+            
+            <select name = 'filter' class="form-select" aria-label="priority" onchange="submitFormfilter()">
+                <option selected>Filter by</option>
+                <option value="To Do">To Do</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Done">Done</option>
+            </select>
+        </form> -->
+
+
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="d-flex align-items-center">
+                <button type="button" class="circular-button me-2 bg-dark" id="addTaskBtn"><i class="bi bi-plus bg-dark"></i></button>
+                <h5 class="m-0">Add New Task</h5>
+            </div>
+            <div class="d-flex align-items-center">
+            <form id="filter" action="{{ url_for('filter_task') }}" method="POST" class="d-flex align-items-center"> 
+                <select name="filter" class="form-select me-2" aria-label="priority" onchange="submitFormfilter()">
+                    <option selected>Filter by</option>
+                    <option value="To Do">To Do</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Done">Completed</option>
+                    <option value="{{date}}">Past Due</option>
+                </select>
+               
+            </form>
+            <form id="sort" action="{{ url_for('sort') }}" method="POST" class="d-flex align-items-center">
+                <input type="hidden" name="task" value="{{ tasks }}">
+                <select name="sort" class="form-select me-2" aria-label="priority" onchange="submitFormsort()">
+                    <option selected>Sort by Priority</option>
+                    <option value="low">Low - High</option>
+                    <option value="0">High - Low</option>
+                </select>
+            </div>
+            </form>
+        </div>
+        
+        
+        <div id="taskInput" style="display: none;">
+            <form  action="{{ url_for('manage_task_add') }}" method="POST">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td><input name ='task_name' type="text" class="form-control" placeholder="Task Name"></td>
+                            <td>
+                                <select name = 'priority' class="form-select" aria-label="priority">
+                                    <option selected>priority</option>
+                                    <option value="High">High</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="Low">Low</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name = 'category' class="form-select" aria-label="Category">
+                                    <option selected>Category</option>
+                                    <option value="Work">Work</option>
+                                    <option value="Personal">Personal</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </td>
+                            <td><input name = 'due_date' type="date" class="form-control"></td>
+                            <td>
+                                <select name = "status" class="form-select" aria-label="Status">
+                                    <option selected>Status</option>
+                                    <option value="To Do">To Do</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Done">Done</option>
+                                </select>
+                            </td>
+                            </td>
+                            <td><input type="hidden" name="user_id" value="{{user_id}}">
+                            </td>
+                            </td>
+                            <td><button type="submit" class="btn btn-dark">Add</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    <div>
+        {% if not tasks%}
+        <br>
+        <h3>There are No Tasks</h3>
+        {% endif %}
+        <div class="accordion" >
+            {% for task in tasks %}
+            <div class="accordion-item" >
+                <h2 class="accordion-header" id="heading{{ task.TaskID }}">
+                    <button class="accordion-button bg-light shadow-none text-dark  " type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ task.TaskID }}" aria-expanded="true" aria-controls="collapse{{ task.TaskID }}">
+                        {{ task.TaskName }}
+                        <sup class="status {% if date > task.DueDate and task.status != 'Done'%} due {% elif task.status == 'Done' %}done{% elif task.status == 'To Do' %}todo{% else %}in-progress{% endif %} ">
+                            {% if date > task.DueDate and task.status != 'Done' %}
+                            Past Due
+                                {% elif task.status == 'Done' %}
+                                Completed
+                                
+                            {% elif task.status == 'To Do' %}
+                                To Do
+                            {% else %}
+                                In Progress
+                            {% endif %}
+
+                        </sup>
+                        
+                        
+                    </button>
+                </h2>
+                <div id="collapse{{ task.TaskID }}" class="accordion-collapse collapse" aria-labelledby="heading{{ task.TaskID }}" data-bs-parent="#accordionExample">
+                   
+
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                
+                                <th>Name</th>
+                                <th>Priority</th>
+                                <th>Category</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                                <th>Options</th>
+                            </tr>
+                        </thead>
+                        <tr>
+                            
+                            
+                            <td>{{ task.TaskName }}</td>
+                            <td>{{ task.Priority }}</td>
+                            <td>{{ task.Category }}</td>
+                            <td>{{ task.DueDate }}</td>
+                            <td>{{ task.status }}</td>
+                            <td>
+                                <a href="{{url_for('task_update',task_id=task.TaskID)}}">
+                                    <button {% if task.status == 'Done' %}disabled{% endif %} type="button" class="btn btn-outline-primary btn-sm ms-auto editSubTaskBtn " data-subtaskid="{{ task.TaskID }}"><i class="bi bi-pencil"></i>
+                                    
+                                    </button></a>
+                                <button type="button" class="btn btn-outline-danger btn-sm me-2 del_main" data-taskid="{{ task.TaskID }}"><i class="bi bi-trash"></i></button>
+
+                                <form id="del_form_{{ task.TaskID }}" action="{{ url_for('del_main') }}" method="POST" style="display: none;">
+                                    <input type="hidden" name="task_id" value="{{ task.TaskID }}">
+                                </form>
+                                </button>   
+
+
+                        </td>
+                        </tr>
+                    </table>
+                    
+                    <div class="accordion-body">
+                        <div class="container mt-5">
+                            
+                            <div class="d-flex align-items-center mb-3">
+                                <button type="button" class="circular-button me-2 addSubTaskBtn  bg-dark" data-taskid="{{ task.TaskID }}"><i class="bi bi-plus"></i></button>
+                                
+                                <h5 class="m-0">Add New Sub Task</h5>
+                            </div>
+
+                            <div id="SubtaskInput{{ task.TaskID }}" style="display: none;">
+                                <form  action="{{ url_for('manage_task_sub_add') }}" method="POST">
+                                    <table class="table">
+                                        <tbody>
+                                            <tr>
+                                                <td><input name ='task_name' type="text" class="form-control" placeholder="Task Name"></td>
+                                                <td>
+                                                    <select name = 'priority' class="form-select" aria-label="priority">
+                                                        <option selected>priority</option>
+                                                        <option value="High">High</option>
+                                                        <option value="Medium">Medium</option>
+                                                        <option value="Low">Low</option>
+                                                    </select>
+                                                </td>
+                                                <!-- <td>
+                                                    <select name = 'category' class="form-select" aria-label="Category">
+                                                        <option selected>Category</option>
+                                                        <option value="Work">Work</option>
+                                                        <option value="Personal">Personal</option>
+                                                        <option value="Other">Other</option>
+                                                    </select>
+                                                </td> -->
+                                                <td><input name = 'due_date' type="date" class="form-control"></td>
+                                                <td>
+                                                    <select name = "status" class="form-select" aria-label="Status">
+                                                        <option selected>Status</option>
+                                                        <option value="To Do">To Do</option>
+                                                        <option value="In Progress">In Progress</option>
+                                                        <option value="Done">Done</option>
+                                                    </select>
+                                                </td>
+                                                </td>
+                                                <td><input type="hidden" name="user_id" value="{{user_id}}">
+                                                </td>
+                                                </td>
+                                                <td>
+                                                    
+                                                    <input type="hidden" name="task_id" value="{{task.TaskID}}">
+                                                </td>
+                                                <td><button type="submit" class="btn btn-dark">Add</button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </form>
+                            </div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th style="text-align: center;">Completion</th>
+                                    <th>Name</th>
+                                    <th>Priority</th>
+                                    <!-- <th>Category</th> -->
+                                    <th>Due Date</th>
+                                    <th>Status</th>
+                                    <th>Options</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for subtask in subtasks %}
+                                {% if subtask.TaskID == task.TaskID %}
+                                
+                                <tr {% if subtask.status == 'Done' %} style="color:green;opacity: 0.5;" {% endif %}>
+                                    <td style="text-align: center;">
+                                        <form id="check_form_{{ subtask.SubTaskID }}" action="{{ url_for('check_box') }}" method="POST" style="display: inline;">
+                                            <input type="checkbox" id="myCheckbox_{{ subtask.SubTaskID }}" name="myCheckbox" {% if subtask.status == 'Done' %} checked {% endif %} onclick="submitForm('{{ subtask.SubTaskID }}')" {% if subtask.status == 'Done' %} disabled {% endif %}>
+                                            <input type="hidden" name="sub_task_id" value="{{ subtask.SubTaskID }}">
+                                        </form>
+                                    </td>
+                                    
+                                    <td>{{ subtask.TaskName }}</td>
+                                    <td>{{ subtask.Priority }}</td>
+                                    <!-- <td>{{ subtask.Category }}</td> -->
+                                    <td>{{ subtask.DueDate }}</td>
+                                    <td>{{ subtask.status }}</td>
+                                    <td>
+                                        
+                                        <a href="{{ url_for('sub_task_update',task_id=subtask.SubTaskID) }}">
+                                        <button {% if subtask.status == 'Done' %}disabled{% endif %} type="button" class="btn btn-outline-primary btn-sm ms-auto editSubTaskBtn" data-subtaskid="{{ subtask.SubTaskID }}"><i class="bi bi-pencil"></i>
+                                        </a>
+                                        </button>
+                                    
+                                        
+
+                                        
+                                            <button {% if subtask.status == 'Done' %}disabled{% endif %} type="button" class="btn btn-outline-danger btn-sm me-2 sub_del" data-subtaskid="{{ subtask.SubTaskID }}"><i class="bi bi-trash"></i></button>
+
+                                            <form id="sub_del_form_{{ subtask.SubTaskID }}" action="{{ url_for('sub_del') }}" method="POST" style="display: inline;">
+                                                <input type="hidden" name="sub_task_id" value="{{ subtask.SubTaskID }}">
+                                                <input type="submit" style="display: none;">
+                                            </form>
+                                            </button>
+  
+                                    </td>
+                                </tr>
+                                
+                                {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    
+    </div>
+</main>
+
+<!-- Bootstrap JS and jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $("#addTaskBtn").click(function() {
+            $("#taskInput").toggle();
+        });
+    });
+    $(document).ready(function() {
+        $(".addSubTaskBtn").click(function() {
+            var taskId = $(this).data('taskid');
+            $("#SubtaskInput" + taskId).toggle();
+        });
+    });
+
+    function submitForm(subtaskId) {
+            document.getElementById("check_form_" + subtaskId).submit();
+        }
+
+    function submitFormfilter() {
+        document.getElementById("filter").submit();
+    }
+
+    function submitFormsort() {
+        document.getElementById("sort").submit();
+    }
+
+    $(".sub_del").click(function() {
+        var subtaskId = $(this).data('subtaskid');
+        $("#sub_del_form_" + subtaskId).submit();
+    });
+
+    $(document).ready(function() {
+        $(".del_main").click(function() {
+            var taskId = $(this).data('taskid');
+            $("#del_form_" + taskId).submit();
+        });
+    });
+
+
+    $(document).ready(function() {
+        $(".editSubTaskBtn").click(function() {
+            var subtaskId = $(this).data('subtaskid');
+            $("#EditSubtaskInput" + subtaskId).toggle();
+        });
+    });
+
+
+</script>
+</body>
+</html>

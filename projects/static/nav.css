@@ -1,0 +1,53 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar {
+    background-color: #333;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    margin-right: 20px;
+}
+
+.logo img {
+    height: 40px;
+}
+.white-link {
+    color: white;
+}
+
+/* table*/
+/* .button_table {
+    border-collapse: separate;
+    border-spacing: 10px;
+}
+
+.button_table td {
+    padding-left: 100px;
+} */
+
+/*crosss strike line*/
+
+
+/* trying something becuase why not {text transition at index}*/
+.fade-in-text {
+    font-family: Arial;
+    font-size: 150px;
+    animation: fadeIn 1s;
+  }
+  
+  @keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  

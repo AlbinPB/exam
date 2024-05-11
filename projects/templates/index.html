@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+{% include 'nav.html' %}
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TaskMaster</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='nav.css') }}">
+<style>
+    /* Styles for About Us section */
+    #about {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 28px;
+        color: #333;
+    }
+
+    .about-content {
+        text-align:center;
+        max-width: auto;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: white;
+        border-radius: 10px;
+        
+    }
+
+    .about-content p {
+        font-size: 18px;
+        line-height: 1.6;
+        color: #666;
+    }
+
+            #contact {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 28px;
+            color: #333;
+        }
+
+        .contact-content {
+            max-width: auto;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+
+        }
+
+        .contact-content p {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #666;
+        }
+
+.image {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .text {
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: black;
+    font-size: 50px; 
+    text-align: center;
+    text-shadow: 
+      -1px -1px 0 #fff,  
+       1px -1px 0 #fff,
+      -1px  1px 0 #fff,
+       1px  1px 0 #fff; /* Outline color and thickness */
+  
+  }  .text1 {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: black;
+    font-size: 24px; /* Adjust as per your requirement */
+    text-align: center;
+        text-shadow: 
+      -1px -1px 0 #fff,  
+       1px -1px 0 #fff,
+      -1px  1px 0 #fff,
+       1px  1px 0 #fff; /* Outline color and thickness */
+  
+  }
+</style>
+
+</head>
+<body>
+    
+    <header class="bgimg w3-display-container w3-grayscale-min" id="home">
+ 
+      </header>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6 ">
+<div class="hero">
+    <img style = "height:300px; width:1230px;"src="../static/home.png" alt="Create Task" class="image">
+    <p class = "text">TaskMaster</p>
+    <p class = 'text1'>Master your tasks with ease.</p>
+</div>
+</div></div></div>
+<div class="features">
+    <div class="feature-card">
+        <img src="../static/create.png" alt="Create Task">
+        <h2>Create</h2>
+        <p>Create new tasks easily and efficiently.</p>
+    </div>
+    <div class="feature-card">
+        <img style = "height: 200px;width: 300px;" src="../static/update.png" alt="Update Task">
+        <h2>Update</h2>
+        <p>Update existing tasks as per requirement.</p>
+    </div>
+    <div class="feature-card">
+        <img style = "height: 200px;width: 300px;" src="../static/delete.png" alt="Delete Task">
+        <h2>Delete</h2>
+        <p>Delete tasks that are no longer needed.</p>
+    </div>
+     
+</div>
+
+<div id = aboutt></div>
+<div>
+    <h2 id="about">About Us</h2>
+    <div class="about-content">
+        <p>Welcome to TaskMaster, your go-to solution for managing tasks efficiently and effortlessly. TaskMaster was born out of the need for a simple yet powerful tool to help individuals and teams organize their tasks with ease.
+       At TaskMaster, we understand the challenges of juggling multiple tasks and deadlines, which is why we are dedicated to providing a user-friendly platform that streamlines your task management process.</p>
+        <p>Our mission is to empower you to take control of your tasks and achieve your goals effectively. Whether you're a busy professional, a student managing assignments, or a team collaborating on projects, TaskMaster is here to support you every step of the way.
+        We believe in continuous improvement and are committed to enhancing TaskMaster's features based on user feedback and emerging technologies. Your satisfaction and productivity are our top priorities.</p>
+        <p>Join the TaskMaster community today and start mastering your tasks with ease!</p>
+   
+    </div>
+</div>
+</div>
+<div id = contactt></div>
+<div>
+    <h2 id="contact">Contact Us</h2>
+    <div class="contact-content">
+        <p>If you have any questions, feedback, or inquiries, feel free to reach out to us:</p>
+        <p>Email: info@taskmaster.com</p>
+        <p>Phone: +1 (123) 456-7890</p>
+        <p>Address: 123 TaskMaster Street, City, Country</p>
+    </div>
+</div>
+</div>
+
+</body>
+</html>
